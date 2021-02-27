@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: persist
+spec:
+  selector:
+    matchLabels:
+      app: persist
+  serviceName: persist
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: persist
+    spec:
+      containers:
+      - name: persist
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+          name: web
+        volumeMounts:
+        - name: www
+          mountPath: /usr/share/nginx/html
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
