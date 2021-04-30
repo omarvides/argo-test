@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: initfile
+  namespace: mongo
+data:
+  createuser.sh: |
+    #!/bin/bash
+    set -ex;
+    mongo <<EOF
+    db.createUser({
+        user: $(_js_escape "$MONGO_NON_ROOT_USERNAME"),
+        pwd: $(_js_escape "$MONGO_NON_ROOT_PASSWORD"),
+        roles: [ { role: "readWrite", db: "example" } ]
+    })
+    EOF
